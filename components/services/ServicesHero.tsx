@@ -41,7 +41,7 @@ export default function ServicesHero() {
                                 }}
                                 className="serif ml-[11vw] italic text-[17vw] leading-[0.82] tracking-[-0.055em] text-[#8a8173] sm:text-[13vw] lg:ml-[12vw] lg:text-[8.5vw]"
                             >
-                                rituals.
+                                services.
                             </motion.h1>
                         </div>
 

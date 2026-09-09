@@ -8,7 +8,7 @@ import type { Metadata } from "next";
 export const metadata: Metadata = {
     title: "Services",
     description:
-        "Explore Élanora hair, skin, nail and bridal beauty rituals.",
+        "Explore Élanora hair, skin, nail and bridal beauty Services.",
 };
 export default function ServicesPage() {
     return (

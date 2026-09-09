@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
 import { motion } from "motion/react";
 
@@ -9,101 +10,157 @@ const artists = [
         name: "Amaya Silva",
         role: "Creative Hair Director",
         image: "/images/artist-01.jpg",
+        number: "01",
+        offset: "lg:translate-y-0",
+        width: "lg:w-[31%]",
     },
     {
         name: "Maya Perera",
         role: "Skin & Beauty Artist",
         image: "/images/artist-02.jpg",
+        number: "02",
+        offset: "lg:translate-y-28",
+        width: "lg:w-[34%]",
     },
     {
         name: "Elena Jay",
         role: "Bridal & Editorial Artist",
         image: "/images/artist-03.jpg",
+        number: "03",
+        offset: "lg:-translate-y-10",
+        width: "lg:w-[29%]",
     },
 ];
 
 export default function Artists() {
     return (
-        <section className="bg-[#ebe4d8] py-24 md:py-36">
+        <section className="relative overflow-hidden bg-[#f4f0e8] py-24 md:py-32 lg:py-40">
             <div className="container-main">
-
-                {/* Header */}
-                <div className="grid gap-10 border-b border-black/15 pb-12 lg:grid-cols-[0.8fr_1.5fr] lg:items-end">
-                    <div>
-                        <p className="eyebrow text-[#777166]">Our Artists</p>
-                    </div>
-
-                    <motion.h2
-                        initial={{ opacity: 0, y: 40 }}
-                        whileInView={{ opacity: 1, y: 0 }}
-                        viewport={{ once: true, amount: 0.25 }}
+                {/* Giant editorial label */}
+                <div className="overflow-hidden border-b border-black/15 pb-7">
+                    <motion.p
+                        initial={{ y: "100%" }}
+                        whileInView={{ y: 0 }}
+                        viewport={{ once: true }}
                         transition={{
-                            duration: 0.8,
+                            duration: 0.9,
                             ease: [0.16, 1, 0.3, 1],
                         }}
-                        className="serif max-w-4xl text-[12vw] leading-[0.92] tracking-[-0.04em] sm:text-[9vw] lg:text-[5.7vw]"
+                        className="serif text-[20vw] leading-[0.72] tracking-[-0.07em] text-black/[0.055] lg:text-[11vw]"
                     >
-                        Artistry with
-                        <br />
-                        <span className="italic text-[#8a8173]">
-                            intention.
-                        </span>
-                    </motion.h2>
+                        ARTISTS
+                    </motion.p>
                 </div>
 
-                {/* Artist cards */}
-                <div className="mt-16 grid gap-12 md:grid-cols-3">
+                {/* Intro */}
+                <div className="mt-12 grid gap-8 lg:grid-cols-[1.3fr_0.7fr] lg:items-end">
+                    <div>
+                        <p className="text-[9px] uppercase tracking-[0.24em] text-[#777166]">
+                            04 / The People
+                        </p>
+
+                        <h2 className="serif mt-5 max-w-[840px] text-5xl leading-[0.9] tracking-[-0.045em] md:text-7xl lg:text-[88px]">
+                            Crafted by
+                            <span className="ml-[0.18em] italic text-[#9a7c58]">
+                                perspective.
+                            </span>
+                        </h2>
+                    </div>
+
+                    <p className="max-w-[300px] text-[12px] leading-6 text-[#666057] lg:justify-self-end">
+                        A small collective of artists with distinct approaches, united by
+                        restraint, detail and a respect for individuality.
+                    </p>
+                </div>
+
+                {/* Editorial artist composition */}
+                <div className="mt-20 flex flex-col gap-14 lg:mt-28 lg:min-h-[920px] lg:flex-row lg:items-start lg:justify-between lg:gap-7">
                     {artists.map((artist, index) => (
                         <motion.article
                             key={artist.name}
-                            initial={{ opacity: 0, y: 50 }}
+                            initial={{ opacity: 0, y: 60 }}
                             whileInView={{ opacity: 1, y: 0 }}
-                            viewport={{ once: true, amount: 0.2 }}
+                            viewport={{
+                                once: true,
+                                amount: 0.2,
+                            }}
                             transition={{
-                                duration: 0.8,
+                                duration: 0.85,
                                 delay: index * 0.12,
                                 ease: [0.16, 1, 0.3, 1],
                             }}
-                            className="group"
+                            className={`group relative w-full ${artist.width} ${artist.offset}`}
                         >
-
                             {/* Image */}
-                            <div className="relative aspect-[3/4] overflow-hidden bg-[#d8d0c3]">
+                            <div
+                                className={`relative overflow-hidden ${index === 1
+                                        ? "aspect-[4/5]"
+                                        : index === 2
+                                            ? "aspect-[3/4]"
+                                            : "aspect-[4/5]"
+                                    }`}
+                            >
                                 <Image
                                     src={artist.image}
-                                    alt={artist.name}
+                                    alt={`${artist.name}, ${artist.role}`}
                                     fill
-                                    sizes="(max-width: 768px) 100vw, 33vw"
-                                    className="object-cover transition-transform duration-700 ease-out group-hover:scale-[1.045]"
+                                    sizes="(max-width: 1024px) 100vw, 34vw"
+                                    className="object-cover transition-transform duration-[900ms] ease-out group-hover:scale-[1.045]"
                                 />
 
-                                <div className="absolute inset-0 bg-black/[0.05] transition-colors duration-500 group-hover:bg-black/[0.12]" />
+                                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/5 to-transparent opacity-50 transition-opacity duration-500 group-hover:opacity-80" />
 
                                 {/* Number */}
-                                <span className="absolute left-5 top-5 text-[10px] tracking-[0.18em] text-white">
-                                    0{index + 1}
-                                </span>
+                                <div className="absolute left-5 top-5 z-20">
+                                    <span className="text-[8px] uppercase tracking-[0.22em] text-white/65">
+                                        Artist {artist.number}
+                                    </span>
+                                </div>
 
-                                {/* Hover arrow */}
-                                <div className="absolute bottom-5 right-5 flex h-11 w-11 translate-y-3 items-center justify-center rounded-full bg-[#f4f0e8] text-[#181713] opacity-0 transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100">
-                                    <ArrowUpRight size={16} strokeWidth={1.2} />
+                                {/* Hover text */}
+                                <motion.div
+                                    initial={false}
+                                    className="absolute inset-x-0 bottom-0 z-20 p-6 md:p-7"
+                                >
+                                    <div className="translate-y-3 transition-transform duration-500 group-hover:translate-y-0">
+                                        <p className="text-[8px] uppercase tracking-[0.2em] text-white/45">
+                                            Élanora / Colombo
+                                        </p>
+
+                                        <h3 className="serif mt-2 text-4xl tracking-[-0.035em] text-white">
+                                            {artist.name}
+                                        </h3>
+
+                                        <p className="mt-2 text-[9px] uppercase tracking-[0.18em] text-white/60">
+                                            {artist.role}
+                                        </p>
+
+                                        <p className="mt-5 max-w-[280px] translate-y-3 text-[11px] leading-5 text-white/0 transition-all duration-500 group-hover:translate-y-0 group-hover:text-white/60">
+                                            Beauty interpreted through individual character, not a
+                                            fixed formula.
+                                        </p>
+                                    </div>
+                                </motion.div>
+
+                                {/* Corner icon */}
+                                <div className="absolute right-5 top-5 z-20 flex h-10 w-10 items-center justify-center rounded-full border border-white/30 text-white backdrop-blur-sm transition-all duration-300 group-hover:rotate-45 group-hover:bg-white group-hover:text-[#181713]">
+                                    <ArrowUpRight size={14} strokeWidth={1.2} />
                                 </div>
                             </div>
 
-                            {/* Text */}
-                            <div className="flex items-start justify-between border-b border-black/15 py-6">
+                            {/* Caption outside image */}
+                            <div className="flex items-start justify-between border-b border-black/15 py-5">
                                 <div>
-                                    <h3 className="serif text-3xl tracking-[-0.03em]">
+                                    <p className="serif text-2xl tracking-[-0.025em]">
                                         {artist.name}
-                                    </h3>
-
-                                    <p className="mt-2 text-[10px] uppercase tracking-[0.18em] text-[#777166]">
+                                    </p>
+                                    <p className="mt-1 text-[8px] uppercase tracking-[0.18em] text-[#777166]">
                                         {artist.role}
                                     </p>
                                 </div>
 
-                                <span className="mt-1 text-[10px] text-[#777166]">
-                                    ELN.
+                                <span className="text-[8px] tracking-[0.18em] text-[#9a7c58]">
+                                    {artist.number}
                                 </span>
                             </div>
                         </motion.article>
@@ -111,28 +168,40 @@ export default function Artists() {
                 </div>
 
                 {/* Bottom statement */}
-                <motion.div
-                    initial={{ opacity: 0, y: 30 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ duration: 0.8 }}
-                    className="mt-24 flex flex-col justify-between gap-10 border-t border-black/15 pt-10 md:flex-row md:items-end"
-                >
-                    <p className="max-w-lg text-[13px] leading-6 text-[#696359]">
-                        Our artists bring together technique, intuition and a deep
-                        understanding of contemporary beauty to create work that feels
-                        uniquely personal.
+                <div className="mt-20 grid gap-10 border-t border-black/15 pt-10 md:grid-cols-2 lg:mt-10">
+                    <p className="serif max-w-[620px] text-4xl leading-[0.95] tracking-[-0.035em] md:text-5xl">
+                        The result should still feel
+                        <span className="italic text-[#9a7c58]"> like you.</span>
                     </p>
 
-                    <p className="serif max-w-xl text-4xl leading-[1.05] md:text-5xl">
-                        No two faces.
-                        <br />
-                        <span className="italic text-[#8a8173]">
-                            No two rituals.
-                        </span>
-                    </p>
-                </motion.div>
+                    <div className="md:justify-self-end">
+                        <p className="max-w-[290px] text-[12px] leading-6 text-[#666057]">
+                            Every appointment begins with conversation and evolves through
+                            considered technique.
+                        </p>
 
+                        <Link
+                            href="/experience"
+                            className="group mt-7 inline-flex items-center gap-4"
+                        >
+                            <span className="text-[9px] uppercase tracking-[0.2em]">
+                                Meet the atelier
+                            </span>
+
+                            <span className="h-px w-10 bg-[#181713]/30 transition-all duration-300 group-hover:w-16" />
+                        </Link>
+                    </div>
+                </div>
+            </div>
+
+            {/* Decorative oversized word */}
+            <div
+                aria-hidden="true"
+                className="pointer-events-none absolute -right-[4vw] bottom-[2%] hidden lg:block"
+            >
+                <p className="serif text-[12vw] italic leading-none text-black/[0.025]">
+                    craft
+                </p>
             </div>
         </section>
     );

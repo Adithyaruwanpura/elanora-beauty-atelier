@@ -1,109 +1,145 @@
 "use client";
 
-import { motion } from "motion/react";
+import { motion, useScroll, useTransform } from "motion/react";
+import { useRef } from "react";
 
 export default function Philosophy() {
+    const sectionRef = useRef<HTMLElement | null>(null);
+
+    const { scrollYProgress } = useScroll({
+        target: sectionRef,
+        offset: ["start end", "end start"],
+    });
+
+    const line1Opacity = useTransform(
+        scrollYProgress,
+        [0.12, 0.28],
+        [0.18, 1]
+    );
+
+    const line2Opacity = useTransform(
+        scrollYProgress,
+        [0.28, 0.44],
+        [0.18, 1]
+    );
+
+    const line3Opacity = useTransform(
+        scrollYProgress,
+        [0.44, 0.60],
+        [0.18, 1]
+    );
+
+    const line4Opacity = useTransform(
+        scrollYProgress,
+        [0.60, 0.76],
+        [0.18, 1]
+    );
+
+    const imageY = useTransform(
+        scrollYProgress,
+        [0, 1],
+        [45, -45]
+    );
+
     return (
-        <section className="bg-[#f4f0e8] py-24 md:py-36">
-            <div className="container-main">
+        <section
+            ref={sectionRef}
+            className="relative bg-[#ebe4d8]"
+        >
+            <div className="container-main grid gap-16 py-24 lg:min-h-[180vh] lg:grid-cols-[0.72fr_1.28fr] lg:gap-24 lg:py-0">
+                {/* LEFT — sticky editorial meta */}
+                <div className="lg:sticky lg:top-0 lg:flex lg:h-screen lg:flex-col lg:justify-between lg:py-24">
+                    <div>
+                        <p className="text-[9px] uppercase tracking-[0.24em] text-[#777166]">
+                            03 / Philosophy
+                        </p>
 
-                <div className="grid gap-14 lg:grid-cols-[0.7fr_1.6fr]">
-
-                    <div className="lg:pt-3">
-                        <p className="eyebrow text-[#777166]">
-                            Our Philosophy
+                        <p className="mt-6 max-w-[280px] text-[12px] leading-6 text-[#666057]">
+                            Élanora is built around one idea:
+                            beauty should reveal individuality,
+                            not erase it.
                         </p>
                     </div>
 
-                    <div>
-                        <motion.p
-                            initial={{ opacity: 0, y: 40 }}
-                            whileInView={{ opacity: 1, y: 0 }}
-                            viewport={{ once: true, amount: 0.3 }}
-                            transition={{
-                                duration: 0.8,
-                                ease: [0.16, 1, 0.3, 1],
-                            }}
-                            className="serif max-w-5xl text-[9vw] leading-[0.98] tracking-[-0.045em] sm:text-[7vw] lg:text-[4.8vw]"
-                        >
-                            Beauty is not a
-                            <span className="italic text-[#8a8173]"> standard.</span>
-                            <br />
-                            It is an expression
-                            <br />
-                            of who you are.
-                        </motion.p>
+                    <div className="mt-10 hidden lg:block">
+                        <div className="h-[150px] w-px bg-black/15">
+                            <motion.div
+                                style={{
+                                    scaleY: scrollYProgress,
+                                    transformOrigin: "top",
+                                }}
+                                className="h-full w-full bg-[#181713]"
+                            />
+                        </div>
 
-                        <div className="mt-14 grid gap-10 border-t border-black/15 pt-10 md:grid-cols-2">
+                        <p className="mt-5 text-[8px] uppercase tracking-[0.22em] text-[#777166]">
+                            Scroll to read
+                        </p>
+                    </div>
+                </div>
 
-                            <motion.p
-                                initial={{ opacity: 0, y: 20 }}
-                                whileInView={{ opacity: 1, y: 0 }}
-                                viewport={{ once: true }}
-                                transition={{ duration: 0.7, delay: 0.1 }}
-                                className="max-w-md text-[13px] leading-6 text-[#696359]"
+                {/* RIGHT — statement */}
+                <div className="relative flex flex-col justify-center py-12 lg:min-h-[180vh] lg:py-[26vh]">
+                    <div className="lg:sticky lg:top-[20vh]">
+                        <p className="mb-10 text-[9px] uppercase tracking-[0.24em] text-[#777166]">
+                            A point of view
+                        </p>
+
+                        <div className="serif max-w-[980px] text-[15vw] leading-[0.78] tracking-[-0.06em] sm:text-[12vw] lg:text-[7.2vw]">
+                            <motion.div
+                                style={{ opacity: line1Opacity }}
+                                className="transition-colors"
                             >
-                                At Élanora, every appointment is approached as a personal
-                                ritual. We combine modern beauty culture with thoughtful
-                                technique to create results that feel refined, effortless
-                                and individual.
-                            </motion.p>
+                                Beauty
+                            </motion.div>
 
-                            <motion.p
-                                initial={{ opacity: 0, y: 20 }}
-                                whileInView={{ opacity: 1, y: 0 }}
-                                viewport={{ once: true }}
-                                transition={{ duration: 0.7, delay: 0.2 }}
-                                className="max-w-md text-[13px] leading-6 text-[#696359]"
+                            <motion.div
+                                style={{ opacity: line2Opacity }}
+                                className="ml-[8vw] italic lg:ml-[5vw]"
                             >
-                                From the first consultation to the final detail, our focus
-                                is not transformation for the sake of trends — but creating
-                                a look that feels naturally yours.
-                            </motion.p>
+                                is not
+                            </motion.div>
 
+                            <motion.div
+                                style={{ opacity: line3Opacity }}
+                            >
+                                a standard.
+                            </motion.div>
+
+                            <motion.div
+                                style={{ opacity: line4Opacity }}
+                                className="ml-[5vw] text-[#8f7353] lg:ml-[8vw]"
+                            >
+                                It is expression.
+                            </motion.div>
+                        </div>
+
+                        <div className="mt-16 grid gap-8 border-t border-black/15 pt-8 sm:grid-cols-2">
+                            <p className="max-w-[360px] text-[12px] leading-6 text-[#666057]">
+                                We work with proportion, texture,
+                                personality and mood rather than
+                                predefined ideals.
+                            </p>
+
+                            <p className="max-w-[360px] text-[12px] leading-6 text-[#666057]">
+                                Every appointment begins by listening,
+                                then becomes a collaboration between
+                                person and artist.
+                            </p>
                         </div>
                     </div>
 
-                </div>
-
-                <div className="mt-24 border-y border-black/15 py-8">
+                    {/* Floating editorial word */}
                     <motion.div
-                        initial={{ opacity: 0 }}
-                        whileInView={{ opacity: 1 }}
-                        viewport={{ once: true }}
-                        transition={{ duration: 1 }}
-                        className="flex flex-wrap justify-between gap-8"
+                        style={{ y: imageY }}
+                        aria-hidden="true"
+                        className="pointer-events-none absolute bottom-[10%] right-0 hidden lg:block"
                     >
-                        <div>
-                            <p className="serif text-4xl">01</p>
-                            <p className="mt-2 text-[10px] uppercase tracking-[0.18em] text-[#777166]">
-                                Personal
-                            </p>
-                        </div>
-
-                        <div>
-                            <p className="serif text-4xl">02</p>
-                            <p className="mt-2 text-[10px] uppercase tracking-[0.18em] text-[#777166]">
-                                Intentional
-                            </p>
-                        </div>
-
-                        <div>
-                            <p className="serif text-4xl">03</p>
-                            <p className="mt-2 text-[10px] uppercase tracking-[0.18em] text-[#777166]">
-                                Refined
-                            </p>
-                        </div>
-
-                        <div>
-                            <p className="serif text-4xl">04</p>
-                            <p className="mt-2 text-[10px] uppercase tracking-[0.18em] text-[#777166]">
-                                Expressive
-                            </p>
-                        </div>
+                        <p className="serif text-[110px] italic leading-none text-black/[0.035]">
+                            individual
+                        </p>
                     </motion.div>
                 </div>
-
             </div>
         </section>
     );

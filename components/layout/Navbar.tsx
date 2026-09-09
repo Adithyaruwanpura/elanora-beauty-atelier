@@ -28,7 +28,9 @@ export default function Navbar() {
 
         window.addEventListener("scroll", handleScroll);
 
-        return () => window.removeEventListener("scroll", handleScroll);
+        return () => {
+            window.removeEventListener("scroll", handleScroll);
+        };
     }, []);
 
     useEffect(() => {
@@ -39,16 +41,12 @@ export default function Navbar() {
         };
     }, [open]);
 
-    // Close mobile menu automatically if route changes
     useEffect(() => {
         setOpen(false);
     }, [pathname]);
 
     return (
         <>
-            {/* =========================
-          DESKTOP / MOBILE NAVBAR
-      ========================== */}
             <header
                 className={`fixed left-0 top-0 z-50 w-full transition-all duration-500 ${scrolled || open
                     ? "border-b border-black/10 bg-[#f4f0e8]/90 backdrop-blur-xl"
@@ -56,21 +54,20 @@ export default function Navbar() {
                     }`}
             >
                 <div className="container-main flex h-20 items-center justify-between md:h-24">
-
                     {/* Logo */}
                     <Link
                         href="/"
-                        onClick={() => setOpen(false)}
                         aria-label="Élanora home"
-                        className="serif relative z-[60] text-[21px] tracking-[0.18em] md:text-[23px]"
+                        className="serif relative z-[60] text-[21px] tracking-[0.18em] transition-opacity duration-300 hover:opacity-60 md:text-[23px]"
                     >
                         ÉLANORA
                     </Link>
 
-                    {/* =========================
-              DESKTOP LINKS
-          ========================== */}
-                    <nav className="hidden items-center gap-10 md:flex">
+                    {/* Desktop navigation */}
+                    <nav
+                        aria-label="Primary navigation"
+                        className="hidden items-center gap-8 lg:flex xl:gap-10"
+                    >
                         {links.map((link) => {
                             const active = pathname === link.href;
 
@@ -78,6 +75,7 @@ export default function Navbar() {
                                 <Link
                                     key={link.label}
                                     href={link.href}
+                                    aria-current={active ? "page" : undefined}
                                     className={`group relative text-[10px] uppercase tracking-[0.18em] transition-opacity duration-300 ${active
                                         ? "opacity-100"
                                         : "opacity-55 hover:opacity-100"
@@ -85,7 +83,6 @@ export default function Navbar() {
                                 >
                                     {link.label}
 
-                                    {/* Active / hover underline */}
                                     <span
                                         className={`absolute -bottom-2 left-0 h-px bg-[#181713] transition-all duration-500 ${active
                                             ? "w-full"
@@ -97,18 +94,26 @@ export default function Navbar() {
                         })}
                     </nav>
 
-                    {/* Desktop Book CTA */}
+                    {/* Desktop booking CTA */}
                     <Link
                         href="/book"
-                        className={`hidden border border-[#181713] px-6 py-3 text-[9px] uppercase tracking-[0.18em] transition-all duration-300 md:block ${pathname === "/book"
-                            ? "bg-[#181713] text-[#f4f0e8]"
-                            : "hover:bg-[#313028] hover:text-[#f4f0e8]"
+                        aria-current={pathname === "/book" ? "page" : undefined}
+                        className={`group hidden border px-6 py-3 text-[9px] uppercase tracking-[0.18em] transition-all duration-300 lg:flex lg:items-center ${pathname === "/book"
+                            ? "border-[#a4875d] bg-transparent"
+                            : "border-[#181713] bg-transparent hover:bg-[#181713]"
                             }`}
                     >
-                        Book a Ritual
+                        <span
+                            className={`transition-colors duration-300 ${pathname === "/book"
+                                ? "text-[#181713]"
+                                : "text-[#181713] group-hover:text-[#f4f0e8]"
+                                }`}
+                        >
+                            {pathname === "/book" ? "Booking" : "Book Now"}
+                        </span>
                     </Link>
 
-                    {/* Mobile menu button */}
+                    {/* Mobile menu toggle */}
                     <button
                         type="button"
                         onClick={() => setOpen((current) => !current)}
@@ -118,7 +123,8 @@ export default function Navbar() {
                                 : "Open navigation menu"
                         }
                         aria-expanded={open}
-                        className="relative z-[60] flex h-10 w-10 items-center justify-center md:hidden"
+                        aria-controls="mobile-navigation"
+                        className="relative z-[60] flex h-10 w-10 items-center justify-center lg:hidden"
                     >
                         <AnimatePresence mode="wait" initial={false}>
                             {open ? (
@@ -171,12 +177,11 @@ export default function Navbar() {
                 </div>
             </header>
 
-            {/* =========================
-          MOBILE FULLSCREEN MENU
-      ========================== */}
+            {/* Mobile fullscreen menu */}
             <AnimatePresence>
                 {open && (
                     <motion.div
+                        id="mobile-navigation"
                         initial={{ y: "-100%" }}
                         animate={{ y: 0 }}
                         exit={{ y: "-100%" }}
@@ -184,11 +189,13 @@ export default function Navbar() {
                             duration: 0.55,
                             ease: [0.76, 0, 0.24, 1],
                         }}
-                        className="fixed inset-0 z-40 bg-[#ebe4d8] md:hidden"
+                        className="fixed inset-0 z-40 bg-[#ebe4d8] lg:hidden"
                     >
                         <div className="container-main flex min-h-screen flex-col justify-between pb-10 pt-32">
-
-                            <nav className="flex flex-col">
+                            <nav
+                                aria-label="Mobile navigation"
+                                className="flex flex-col"
+                            >
                                 {links.map((link, index) => {
                                     const active = pathname === link.href;
 
@@ -210,18 +217,18 @@ export default function Navbar() {
                                         >
                                             <Link
                                                 href={link.href}
-                                                onClick={() => setOpen(false)}
+                                                aria-current={
+                                                    active ? "page" : undefined
+                                                }
                                                 className="group flex items-center justify-between py-5"
                                             >
                                                 <div className="flex items-center gap-4">
-
-                                                    {/* Active dot */}
                                                     <motion.span
                                                         animate={{
                                                             width: active ? 7 : 0,
                                                             opacity: active ? 1 : 0,
                                                         }}
-                                                        className="h-[7px] rounded-full bg-[#a4875d]"
+                                                        className="h-[7px] shrink-0 rounded-full bg-[#a4875d]"
                                                     />
 
                                                     <span
@@ -247,7 +254,7 @@ export default function Navbar() {
                                     );
                                 })}
 
-                                {/* BOOK */}
+                                {/* Mobile booking */}
                                 <motion.div
                                     initial={{
                                         opacity: 0,
@@ -264,14 +271,23 @@ export default function Navbar() {
                                 >
                                     <Link
                                         href="/book"
-                                        onClick={() => setOpen(false)}
+                                        aria-current={
+                                            pathname === "/book"
+                                                ? "page"
+                                                : undefined
+                                        }
                                         className="flex items-center justify-between py-5"
                                     >
                                         <div className="flex items-center gap-4">
-
-                                            {pathname === "/book" && (
-                                                <span className="h-[7px] w-[7px] rounded-full bg-[#a4875d]" />
-                                            )}
+                                            <motion.span
+                                                animate={{
+                                                    width:
+                                                        pathname === "/book" ? 7 : 0,
+                                                    opacity:
+                                                        pathname === "/book" ? 1 : 0,
+                                                }}
+                                                className="h-[7px] shrink-0 rounded-full bg-[#a4875d]"
+                                            />
 
                                             <span
                                                 className={`serif text-[clamp(2.5rem,12vw,3.4rem)] italic tracking-[-0.04em] ${pathname === "/book"
@@ -283,14 +299,14 @@ export default function Navbar() {
                                             </span>
                                         </div>
 
-                                        <span className="text-[9px] not-italic tracking-[0.2em] text-[#777166]">
+                                        <span className="text-[9px] tracking-[0.2em] text-[#777166]">
                                             05
                                         </span>
                                     </Link>
                                 </motion.div>
                             </nav>
 
-                            {/* Mobile footer */}
+                            {/* Mobile menu footer */}
                             <motion.div
                                 initial={{ opacity: 0 }}
                                 animate={{ opacity: 1 }}
@@ -306,10 +322,9 @@ export default function Navbar() {
                                 <span className="text-right">
                                     Beauty,
                                     <br />
-                                    refined.
+                                    without rules.
                                 </span>
                             </motion.div>
-
                         </div>
                     </motion.div>
                 )}

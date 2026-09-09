@@ -15,7 +15,7 @@ export default function Footer() {
                         </Link>
 
                         <p className="mt-6 max-w-[260px] text-[12px] leading-6 text-white/40">
-                            Contemporary beauty rituals shaped around individuality,
+                            Contemporary Beauty services shaped around individuality,
                             artistry and quiet luxury.
                         </p>
                     </div>
@@ -67,17 +67,9 @@ export default function Footer() {
                         </p>
 
                         <div className="mt-6 flex flex-col gap-3 text-[12px] text-white/70">
-                            <a href="#" className="transition-opacity hover:opacity-50">
-                                Instagram ↗
-                            </a>
-
-                            <a href="#" className="transition-opacity hover:opacity-50">
-                                Pinterest ↗
-                            </a>
-
-                            <a href="#" className="transition-opacity hover:opacity-50">
-                                TikTok ↗
-                            </a>
+                            <span>Instagram</span>
+                            <span>Pinterest</span>
+                            <span>TikTok</span>
                         </div>
                     </div>
                 </div>

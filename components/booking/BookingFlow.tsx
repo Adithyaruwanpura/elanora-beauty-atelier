@@ -1,64 +1,36 @@
 "use client";
 
-import { AnimatePresence, motion } from "motion/react";
 import {
     ArrowLeft,
     ArrowRight,
-    CalendarDays,
     Check,
+    Clock3,
+    UserRound,
 } from "lucide-react";
-import { FormEvent, useState } from "react";
+import { AnimatePresence, motion } from "motion/react";
+import { useMemo, useState } from "react";
 
 const services = [
-    {
-        name: "Hair Rituals",
-        description: "Cut, colour & restorative care",
-        price: "From LKR 4,500",
-    },
-    {
-        name: "Skin Therapy",
-        description: "Facials & personalised skin rituals",
-        price: "From LKR 6,000",
-    },
-    {
-        name: "Nail Atelier",
-        description: "Refined manicure & nail artistry",
-        price: "From LKR 3,500",
-    },
-    {
-        name: "Bridal & Editorial",
-        description: "Beauty direction for meaningful occasions",
-        price: "By consultation",
-    },
+    { name: "Hair Styling", duration: "90 min", price: "From LKR 4,500" },
+    { name: "Skin Therapy", duration: "75 min", price: "From LKR 6,000" },
+    { name: "Nail Atelier", duration: "60 min", price: "From LKR 3,500" },
+    { name: "Bridal & Editorial", duration: "120 min", price: "From LKR 15,000" },
 ];
 
 const artists = [
-    {
-        name: "Amaya Silva",
-        role: "Creative Hair Director",
-    },
-    {
-        name: "Maya Perera",
-        role: "Skin & Beauty Artist",
-    },
-    {
-        name: "Elena Jay",
-        role: "Bridal & Editorial Artist",
-    },
-    {
-        name: "No preference",
-        role: "Choose the best available artist",
-    },
+    { name: "Amaya Silva", role: "Creative Hair Director" },
+    { name: "Maya Perera", role: "Skin & Beauty Artist" },
+    { name: "Elena Jay", role: "Bridal & Editorial Artist" },
+    { name: "First Available", role: "Best available artist" },
 ];
 
-const times = [
-    "09:00",
-    "10:30",
-    "12:00",
-    "13:30",
-    "15:00",
-    "16:30",
-    "18:00",
+const times = ["09:00", "10:30", "12:00", "14:00", "15:30", "17:00"];
+
+const stepLabels = [
+    "Service",
+    "Artist",
+    "Date & Time",
+    "Your Details",
 ];
 
 export default function BookingFlow() {
@@ -69,425 +41,485 @@ export default function BookingFlow() {
     const [date, setDate] = useState("");
     const [time, setTime] = useState("");
 
-    const [details, setDetails] = useState({
-        name: "",
-        email: "",
-        phone: "",
-        notes: "",
-    });
+    const [name, setName] = useState("");
+    const [phone, setPhone] = useState("");
+    const [email, setEmail] = useState("");
+    const [note, setNote] = useState("");
 
     const [submitted, setSubmitted] = useState(false);
 
+    const selectedService = useMemo(
+        () => services.find((item) => item.name === service),
+        [service]
+    );
+
     const canContinue =
-        (step === 1 && service !== "") ||
-        (step === 2 && artist !== "") ||
-        (step === 3 && date !== "" && time !== "");
+        step === 1
+            ? Boolean(service)
+            : step === 2
+                ? Boolean(artist)
+                : step === 3
+                    ? Boolean(date && time)
+                    : Boolean(name.trim() && phone.trim() && email.trim());
 
-    function handleSubmit(e: FormEvent<HTMLFormElement>) {
-        e.preventDefault();
+    function next() {
+        if (!canContinue) return;
 
-        if (!details.name || !details.email || !details.phone) {
+        if (step < 4) {
+            setStep((current) => current + 1);
             return;
         }
 
         setSubmitted(true);
     }
 
+    function back() {
+        if (step > 1) {
+            setStep((current) => current - 1);
+        }
+    }
+
+    const minDate = new Date().toISOString().split("T")[0];
+
     if (submitted) {
         return (
-            <section className="min-h-[75vh] bg-[#ebe4d8] py-24">
-                <div className="container-main flex min-h-[55vh] items-center justify-center">
-
+            <section className="bg-[#ebe4d8] py-24 md:py-32">
+                <div className="container-main">
                     <motion.div
-                        initial={{ opacity: 0, scale: 0.96 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        transition={{ duration: 0.6 }}
-                        className="max-w-2xl text-center"
+                        initial={{ opacity: 0, y: 35 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{
+                            duration: 0.8,
+                            ease: [0.16, 1, 0.3, 1],
+                        }}
+                        className="mx-auto max-w-[900px] border border-black/15 bg-[#f4f0e8] p-8 md:p-14"
                     >
-                        <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full border border-black/25">
-                            <Check size={22} strokeWidth={1.2} />
+                        <div className="flex h-14 w-14 items-center justify-center rounded-full bg-[#181713] text-[#f4f0e8]">
+                            <Check size={20} strokeWidth={1.3} />
                         </div>
 
-                        <p className="eyebrow mt-8 text-[#777166]">
-                            Request Received
+                        <p className="mt-10 text-[9px] uppercase tracking-[0.24em] text-[#8f7353]">
+                            Appointment request received
                         </p>
 
-                        <h2 className="serif mt-6 text-6xl tracking-[-0.045em] md:text-8xl">
-                            See you
-                            <span className="italic text-[#8a8173]"> soon.</span>
+                        <h2 className="serif mt-5 max-w-[700px] text-5xl leading-[0.9] tracking-[-0.045em] md:text-7xl">
+                            Your appointment
+                            <span className="italic text-[#967653]"> request is ready.</span>
                         </h2>
 
-                        <p className="mx-auto mt-8 max-w-md text-[13px] leading-6 text-[#696359]">
-                            Thank you, {details.name}. Your appointment request for{" "}
-                            {service} with {artist} has been received.
+                        <p className="mt-8 max-w-[540px] text-[12px] leading-6 text-[#666057]">
+                            Thank you, {name}. This is a concept booking experience, so no
+                            real appointment has been created. Your selected details are shown
+                            below.
                         </p>
 
-                        <div className="mx-auto mt-10 grid max-w-md grid-cols-2 border-y border-black/15 py-6 text-left">
-                            <div>
-                                <p className="text-[9px] uppercase tracking-[0.18em] text-[#777166]">
-                                    Date
-                                </p>
-                                <p className="serif mt-2 text-xl">{date}</p>
-                            </div>
-
-                            <div>
-                                <p className="text-[9px] uppercase tracking-[0.18em] text-[#777166]">
-                                    Time
-                                </p>
-                                <p className="serif mt-2 text-xl">{time}</p>
-                            </div>
+                        <div className="mt-12 grid gap-6 border-y border-black/15 py-8 sm:grid-cols-2">
+                            <SummaryItem label="Service" value={service} />
+                            <SummaryItem label="Artist" value={artist} />
+                            <SummaryItem label="Date" value={date} />
+                            <SummaryItem label="Time" value={time} />
                         </div>
 
-                        <p className="mt-8 text-[10px] uppercase tracking-[0.18em] text-[#777166]">
-                            Demo booking experience
-                        </p>
+                        <button
+                            type="button"
+                            onClick={() => {
+                                setSubmitted(false);
+                                setStep(1);
+                            }}
+                            className="mt-10 border border-[#181713] px-6 py-4 text-[9px] uppercase tracking-[0.2em] transition-colors hover:bg-[#181713] hover:text-[#f4f0e8]"
+                        >
+                            Start another booking
+                        </button>
                     </motion.div>
-
                 </div>
             </section>
         );
     }
 
     return (
-        <section className="bg-[#ebe4d8] py-20 md:py-28">
+        <section className="bg-[#ebe4d8] py-24 md:py-32 lg:py-40">
             <div className="container-main">
+                <div className="grid gap-12 lg:grid-cols-[0.7fr_1.3fr] lg:gap-20">
+                    {/* LEFT */}
+                    <aside>
+                        <div className="lg:sticky lg:top-32">
+                            <p className="text-[9px] uppercase tracking-[0.24em] text-[#777166]">
+                                02 / Appointment
+                            </p>
 
-                {/* Progress */}
-                <div className="grid grid-cols-4 border-y border-black/15">
-                    {["Service", "Artist", "Time", "Details"].map((label, index) => {
-                        const number = index + 1;
+                            <h2 className="serif mt-5 text-5xl leading-[0.9] tracking-[-0.045em] md:text-6xl">
+                                Plan your
+                                <span className="block italic text-[#967653]">
+                                    appointment
+                                </span>
+                            </h2>
 
-                        return (
-                            <div
-                                key={label}
-                                className={`border-r border-black/15 px-2 py-5 last:border-r-0 md:px-5 ${step === number ? "bg-[#181713] text-[#f4f0e8]" : ""
-                                    }`}
-                            >
-                                <p
-                                    className={`text-[8px] uppercase tracking-[0.12em] md:text-[9px] md:tracking-[0.18em] ${step === number
-                                            ? "text-white/60"
-                                            : "text-[#777166]"
-                                        }`}
-                                >
-                                    0{number}
-                                </p>
+                            <div className="mt-12 border-t border-black/15">
+                                {stepLabels.map((label, index) => {
+                                    const number = index + 1;
+                                    const active = step === number;
+                                    const complete = step > number;
 
-                                <p className="mt-1 hidden text-[11px] md:block">
-                                    {label}
-                                </p>
-                            </div>
-                        );
-                    })}
-                </div>
-
-                <div className="grid gap-14 py-16 lg:grid-cols-[0.55fr_1.45fr]">
-
-                    {/* Sidebar */}
-                    <div>
-                        <p className="eyebrow text-[#777166]">
-                            Step 0{step}
-                        </p>
-
-                        <h2 className="serif mt-5 text-4xl tracking-[-0.035em]">
-                            {step === 1 && "Choose a ritual"}
-                            {step === 2 && "Choose your artist"}
-                            {step === 3 && "Find your time"}
-                            {step === 4 && "Your details"}
-                        </h2>
-
-                        <div className="mt-10 hidden max-w-xs border-t border-black/15 pt-6 text-[11px] leading-6 text-[#777166] lg:block">
-                            {service && (
-                                <p>
-                                    Service
-                                    <span className="block text-[#181713]">{service}</span>
-                                </p>
-                            )}
-
-                            {artist && (
-                                <p className="mt-4">
-                                    Artist
-                                    <span className="block text-[#181713]">{artist}</span>
-                                </p>
-                            )}
-
-                            {date && time && (
-                                <p className="mt-4">
-                                    Appointment
-                                    <span className="block text-[#181713]">
-                                        {date} / {time}
-                                    </span>
-                                </p>
-                            )}
-                        </div>
-                    </div>
-
-                    {/* Steps */}
-                    <div className="min-h-[440px]">
-                        <AnimatePresence mode="wait">
-
-                            {/* STEP 1 */}
-                            {step === 1 && (
-                                <motion.div
-                                    key="service"
-                                    initial={{ opacity: 0, x: 25 }}
-                                    animate={{ opacity: 1, x: 0 }}
-                                    exit={{ opacity: 0, x: -25 }}
-                                    transition={{ duration: 0.35 }}
-                                >
-                                    {services.map((item, index) => (
+                                    return (
                                         <button
-                                            key={item.name}
+                                            key={label}
                                             type="button"
-                                            onClick={() => setService(item.name)}
-                                            className={`group grid w-full gap-4 border-t border-black/15 px-2 py-7 text-left transition-all md:grid-cols-[50px_1fr_auto] md:items-center ${service === item.name
-                                                    ? "bg-[#181713] px-5 text-[#f4f0e8]"
-                                                    : "hover:px-5"
-                                                }`}
+                                            onClick={() => {
+                                                if (number < step) setStep(number);
+                                            }}
+                                            className="flex w-full items-center justify-between border-b border-black/15 py-5 text-left"
                                         >
-                                            <span
-                                                className={`text-[9px] ${service === item.name
-                                                        ? "text-white/40"
-                                                        : "text-[#777166]"
-                                                    }`}
-                                            >
-                                                0{index + 1}
-                                            </span>
-
-                                            <div>
-                                                <h3 className="serif text-3xl">
-                                                    {item.name}
-                                                </h3>
-
-                                                <p
-                                                    className={`mt-2 text-[11px] ${service === item.name
-                                                            ? "text-white/45"
-                                                            : "text-[#777166]"
+                                            <div className="flex items-center gap-4">
+                                                <span
+                                                    className={`flex h-7 w-7 items-center justify-center rounded-full border text-[8px] ${complete
+                                                        ? "border-[#181713] bg-[#181713] text-[#f4f0e8]"
+                                                        : active
+                                                            ? "border-[#967653] text-[#967653]"
+                                                            : "border-black/15 text-black/30"
                                                         }`}
                                                 >
-                                                    {item.description}
-                                                </p>
+                                                    {complete ? (
+                                                        <Check size={11} strokeWidth={1.4} />
+                                                    ) : (
+                                                        `0${number}`
+                                                    )}
+                                                </span>
+
+                                                <span
+                                                    className={`text-[10px] uppercase tracking-[0.18em] ${active
+                                                        ? "text-[#181713]"
+                                                        : "text-[#777166]"
+                                                        }`}
+                                                >
+                                                    {label}
+                                                </span>
                                             </div>
 
-                                            <p className="text-[9px] uppercase tracking-[0.15em] opacity-60">
-                                                {item.price}
-                                            </p>
-                                        </button>
-                                    ))}
-                                </motion.div>
-                            )}
-
-                            {/* STEP 2 */}
-                            {step === 2 && (
-                                <motion.div
-                                    key="artist"
-                                    initial={{ opacity: 0, x: 25 }}
-                                    animate={{ opacity: 1, x: 0 }}
-                                    exit={{ opacity: 0, x: -25 }}
-                                    transition={{ duration: 0.35 }}
-                                >
-                                    {artists.map((item, index) => (
-                                        <button
-                                            key={item.name}
-                                            type="button"
-                                            onClick={() => setArtist(item.name)}
-                                            className={`grid w-full gap-4 border-t border-black/15 px-2 py-8 text-left transition-all md:grid-cols-[50px_1fr_auto] md:items-center ${artist === item.name
-                                                    ? "bg-[#181713] px-5 text-[#f4f0e8]"
-                                                    : "hover:px-5"
-                                                }`}
-                                        >
-                                            <span className="text-[9px] opacity-40">
-                                                0{index + 1}
-                                            </span>
-
-                                            <div>
-                                                <h3 className="serif text-3xl">
-                                                    {item.name}
-                                                </h3>
-
-                                                <p className="mt-2 text-[10px] uppercase tracking-[0.15em] opacity-45">
-                                                    {item.role}
-                                                </p>
-                                            </div>
-
-                                            {artist === item.name && (
-                                                <Check size={18} strokeWidth={1.2} />
+                                            {active && (
+                                                <span className="text-[8px] uppercase tracking-[0.2em] text-[#967653]">
+                                                    Current
+                                                </span>
                                             )}
                                         </button>
-                                    ))}
-                                </motion.div>
-                            )}
+                                    );
+                                })}
+                            </div>
 
-                            {/* STEP 3 */}
-                            {step === 3 && (
-                                <motion.div
-                                    key="time"
-                                    initial={{ opacity: 0, x: 25 }}
-                                    animate={{ opacity: 1, x: 0 }}
-                                    exit={{ opacity: 0, x: -25 }}
-                                    transition={{ duration: 0.35 }}
-                                >
-                                    <div className="border-t border-black/15 py-8">
-                                        <label className="text-[9px] uppercase tracking-[0.2em] text-[#777166]">
-                                            Select Date
-                                        </label>
+                            {/* live summary */}
+                            <div className="mt-10 border border-black/15 p-6">
+                                <p className="text-[8px] uppercase tracking-[0.22em] text-[#777166]">
+                                    Your selection
+                                </p>
 
-                                        <div className="relative mt-4">
-                                            <CalendarDays
-                                                size={17}
-                                                strokeWidth={1.2}
-                                                className="absolute left-4 top-1/2 -translate-y-1/2"
-                                            />
+                                <div className="mt-6 space-y-5">
+                                    <SummaryItem
+                                        label="Service"
+                                        value={service || "Not selected"}
+                                    />
 
-                                            <input
-                                                type="date"
-                                                value={date}
-                                                min={new Date().toISOString().split("T")[0]}
-                                                onChange={(e) => setDate(e.target.value)}
-                                                className="w-full border border-black/20 bg-transparent py-5 pl-12 pr-4 text-[12px] outline-none transition-colors focus:border-black"
-                                            />
+                                    <SummaryItem
+                                        label="Artist"
+                                        value={artist || "Not selected"}
+                                    />
+
+                                    <SummaryItem
+                                        label="Date"
+                                        value={date || "Not selected"}
+                                    />
+
+                                    <SummaryItem
+                                        label="Time"
+                                        value={time || "Not selected"}
+                                    />
+                                </div>
+
+                                {selectedService && (
+                                    <div className="mt-6 border-t border-black/15 pt-6">
+                                        <div className="flex justify-between gap-4 text-[9px] uppercase tracking-[0.16em] text-[#777166]">
+                                            <span>{selectedService.duration}</span>
+                                            <span>{selectedService.price}</span>
                                         </div>
                                     </div>
+                                )}
+                            </div>
+                        </div>
+                    </aside>
 
-                                    <div className="border-t border-black/15 py-8">
-                                        <p className="text-[9px] uppercase tracking-[0.2em] text-[#777166]">
-                                            Available Times
-                                        </p>
+                    {/* RIGHT */}
+                    <div>
+                        <div className="mb-8 flex items-center justify-between border-b border-black/15 pb-5">
+                            <span className="text-[9px] uppercase tracking-[0.2em] text-[#777166]">
+                                Step {String(step).padStart(2, "0")} / 04
+                            </span>
 
-                                        <div className="mt-5 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
-                                            {times.map((item) => (
-                                                <button
-                                                    key={item}
-                                                    type="button"
-                                                    onClick={() => setTime(item)}
-                                                    className={`border px-4 py-5 text-[11px] tracking-[0.1em] transition-all ${time === item
-                                                            ? "border-[#181713] bg-[#181713] text-[#f4f0e8]"
-                                                            : "border-black/15 hover:border-black"
-                                                        }`}
-                                                >
-                                                    {item}
-                                                </button>
-                                            ))}
-                                        </div>
-                                    </div>
-                                </motion.div>
-                            )}
+                            <span className="serif text-xl italic text-[#967653]">
+                                {stepLabels[step - 1]}
+                            </span>
+                        </div>
 
-                            {/* STEP 4 */}
-                            {step === 4 && (
-                                <motion.form
-                                    key="details"
-                                    initial={{ opacity: 0, x: 25 }}
-                                    animate={{ opacity: 1, x: 0 }}
-                                    exit={{ opacity: 0 }}
-                                    transition={{ duration: 0.35 }}
-                                    onSubmit={handleSubmit}
-                                >
-                                    <div className="grid gap-8 md:grid-cols-2">
-                                        <InputField
-                                            label="Full Name"
-                                            type="text"
-                                            value={details.name}
-                                            onChange={(value) =>
-                                                setDetails({ ...details, name: value })
-                                            }
-                                        />
-
-                                        <InputField
-                                            label="Email Address"
-                                            type="email"
-                                            value={details.email}
-                                            onChange={(value) =>
-                                                setDetails({ ...details, email: value })
-                                            }
-                                        />
-
-                                        <InputField
-                                            label="Phone Number"
-                                            type="tel"
-                                            value={details.phone}
-                                            onChange={(value) =>
-                                                setDetails({ ...details, phone: value })
-                                            }
-                                        />
-                                    </div>
-
-                                    <div className="mt-8">
-                                        <label className="text-[9px] uppercase tracking-[0.18em] text-[#777166]">
-                                            Anything we should know? / Optional
-                                        </label>
-
-                                        <textarea
-                                            value={details.notes}
-                                            onChange={(e) =>
-                                                setDetails({
-                                                    ...details,
-                                                    notes: e.target.value,
-                                                })
-                                            }
-                                            rows={4}
-                                            className="mt-3 w-full resize-none border-b border-black/25 bg-transparent py-3 text-[13px] outline-none transition-colors focus:border-black"
-                                        />
-                                    </div>
-
-                                    <button
-                                        type="submit"
-                                        disabled={
-                                            !details.name ||
-                                            !details.email ||
-                                            !details.phone
-                                        }
-                                        className="mt-12 flex items-center gap-6 bg-[#181713] px-7 py-5 text-[#f4f0e8] transition-opacity disabled:cursor-not-allowed disabled:opacity-30"
+                        <AnimatePresence mode="wait">
+                            <motion.div
+                                key={step}
+                                initial={{ opacity: 0, x: 24 }}
+                                animate={{ opacity: 1, x: 0 }}
+                                exit={{ opacity: 0, x: -16 }}
+                                transition={{
+                                    duration: 0.4,
+                                    ease: [0.16, 1, 0.3, 1],
+                                }}
+                            >
+                                {step === 1 && (
+                                    <StepShell
+                                        eyebrow="Choose a Services"
+                                        title="What brings you to Élanora?"
+                                        description="Select the experience closest to what you have in mind. The details can be refined during consultation."
                                     >
-                                        <span className="text-[10px] uppercase tracking-[0.2em]">
-                                            Request Appointment
-                                        </span>
+                                        <div className="grid gap-3 sm:grid-cols-2">
+                                            {services.map((item) => {
+                                                const selected = service === item.name;
 
-                                        <ArrowRight size={15} strokeWidth={1.2} />
-                                    </button>
-                                </motion.form>
-                            )}
+                                                return (
+                                                    <button
+                                                        key={item.name}
+                                                        type="button"
+                                                        onClick={() => setService(item.name)}
+                                                        className={`group min-h-[190px] border p-6 text-left transition-all duration-300 ${selected
+                                                            ? "border-[#181713] bg-[#181713] text-[#f4f0e8]"
+                                                            : "border-black/15 bg-[#f4f0e8] hover:border-black/40"
+                                                            }`}
+                                                    >
+                                                        <div className="flex justify-between">
+                                                            <span
+                                                                className={`text-[8px] uppercase tracking-[0.2em] ${selected
+                                                                    ? "text-white/45"
+                                                                    : "text-[#777166]"
+                                                                    }`}
+                                                            >
+                                                                Service
+                                                            </span>
 
+                                                            <span
+                                                                className={`flex h-7 w-7 items-center justify-center rounded-full border ${selected
+                                                                    ? "border-white/30"
+                                                                    : "border-black/15"
+                                                                    }`}
+                                                            >
+                                                                {selected && (
+                                                                    <Check size={11} strokeWidth={1.4} />
+                                                                )}
+                                                            </span>
+                                                        </div>
+
+                                                        <h3 className="serif mt-8 text-3xl tracking-[-0.03em]">
+                                                            {item.name}
+                                                        </h3>
+
+                                                        <div
+                                                            className={`mt-5 flex justify-between text-[8px] uppercase tracking-[0.16em] ${selected
+                                                                ? "text-white/45"
+                                                                : "text-[#777166]"
+                                                                }`}
+                                                        >
+                                                            <span>{item.duration}</span>
+                                                            <span>{item.price}</span>
+                                                        </div>
+                                                    </button>
+                                                );
+                                            })}
+                                        </div>
+                                    </StepShell>
+                                )}
+
+                                {step === 2 && (
+                                    <StepShell
+                                        eyebrow="Choose an artist"
+                                        title="Who would you like to create with?"
+                                        description="Choose a preferred artist, or let us match you with the first available specialist."
+                                    >
+                                        <div className="border-t border-black/15">
+                                            {artists.map((item, index) => {
+                                                const selected = artist === item.name;
+
+                                                return (
+                                                    <button
+                                                        key={item.name}
+                                                        type="button"
+                                                        onClick={() => setArtist(item.name)}
+                                                        className="group flex w-full items-center justify-between border-b border-black/15 py-7 text-left"
+                                                    >
+                                                        <div className="flex items-center gap-5">
+                                                            <span className="text-[8px] text-[#967653]">
+                                                                0{index + 1}
+                                                            </span>
+
+                                                            <div>
+                                                                <h3
+                                                                    className={`serif text-3xl tracking-[-0.03em] transition-transform duration-300 ${selected ? "translate-x-2" : ""
+                                                                        }`}
+                                                                >
+                                                                    {item.name}
+                                                                </h3>
+
+                                                                <p className="mt-1 text-[8px] uppercase tracking-[0.17em] text-[#777166]">
+                                                                    {item.role}
+                                                                </p>
+                                                            </div>
+                                                        </div>
+
+                                                        <span
+                                                            className={`flex h-9 w-9 items-center justify-center rounded-full border transition-colors ${selected
+                                                                ? "border-[#181713] bg-[#181713] text-[#f4f0e8]"
+                                                                : "border-black/15"
+                                                                }`}
+                                                        >
+                                                            {selected && (
+                                                                <Check size={12} strokeWidth={1.4} />
+                                                            )}
+                                                        </span>
+                                                    </button>
+                                                );
+                                            })}
+                                        </div>
+                                    </StepShell>
+                                )}
+
+                                {step === 3 && (
+                                    <StepShell
+                                        eyebrow="Choose a moment"
+                                        title="When should we reserve your Appointment?"
+                                        description="Select your preferred date and appointment time."
+                                    >
+                                        <div className="grid gap-10 md:grid-cols-2">
+                                            <div>
+                                                <label className="text-[9px] uppercase tracking-[0.18em] text-[#777166]">
+                                                    Preferred date
+                                                </label>
+
+                                                <input
+                                                    type="date"
+                                                    min={minDate}
+                                                    value={date}
+                                                    onChange={(e) => setDate(e.target.value)}
+                                                    className="mt-4 w-full border border-black/15 bg-[#f4f0e8] px-5 py-5 text-[13px] outline-none transition-colors focus:border-[#181713]"
+                                                />
+                                            </div>
+
+                                            <div>
+                                                <label className="text-[9px] uppercase tracking-[0.18em] text-[#777166]">
+                                                    Available times
+                                                </label>
+
+                                                <div className="mt-4 grid grid-cols-2 gap-2">
+                                                    {times.map((item) => (
+                                                        <button
+                                                            key={item}
+                                                            type="button"
+                                                            onClick={() => setTime(item)}
+                                                            className={`flex items-center justify-center gap-2 border px-3 py-4 text-[9px] tracking-[0.14em] transition-colors ${time === item
+                                                                ? "border-[#181713] bg-[#181713] text-[#f4f0e8]"
+                                                                : "border-black/15 bg-[#f4f0e8] hover:border-black/40"
+                                                                }`}
+                                                        >
+                                                            <Clock3 size={12} strokeWidth={1.2} />
+                                                            {item}
+                                                        </button>
+                                                    ))}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </StepShell>
+                                )}
+
+                                {step === 4 && (
+                                    <StepShell
+                                        eyebrow="Final details"
+                                        title="A few details before we begin."
+                                        description="These details would normally be used to confirm and personalise your appointment."
+                                    >
+                                        <div className="grid gap-6 sm:grid-cols-2">
+                                            <Field
+                                                label="Full name"
+                                                value={name}
+                                                onChange={setName}
+                                                placeholder="Your name"
+                                            />
+
+                                            <Field
+                                                label="Phone"
+                                                value={phone}
+                                                onChange={setPhone}
+                                                placeholder="+94..."
+                                            />
+
+                                            <div className="sm:col-span-2">
+                                                <Field
+                                                    label="Email"
+                                                    value={email}
+                                                    onChange={setEmail}
+                                                    placeholder="you@example.com"
+                                                    type="email"
+                                                />
+                                            </div>
+
+                                            <div className="sm:col-span-2">
+                                                <label className="text-[9px] uppercase tracking-[0.18em] text-[#777166]">
+                                                    Notes
+                                                </label>
+
+                                                <textarea
+                                                    value={note}
+                                                    onChange={(e) => setNote(e.target.value)}
+                                                    rows={5}
+                                                    placeholder="Tell us anything that would help us prepare..."
+                                                    className="mt-3 w-full resize-none border border-black/15 bg-[#f4f0e8] px-5 py-4 text-[13px] outline-none transition-colors placeholder:text-black/25 focus:border-[#181713]"
+                                                />
+                                            </div>
+                                        </div>
+                                    </StepShell>
+                                )}
+                            </motion.div>
                         </AnimatePresence>
 
-                        {/* Navigation */}
-                        {step < 4 && (
-                            <div className="mt-12 flex items-center justify-between border-t border-black/15 pt-7">
-                                <button
-                                    type="button"
-                                    disabled={step === 1}
-                                    onClick={() => setStep(step - 1)}
-                                    className="flex items-center gap-3 text-[9px] uppercase tracking-[0.18em] disabled:opacity-20"
-                                >
-                                    <ArrowLeft size={14} strokeWidth={1.2} />
-                                    Back
-                                </button>
-
-                                <button
-                                    type="button"
-                                    disabled={!canContinue}
-                                    onClick={() => setStep(step + 1)}
-                                    className="flex items-center gap-4 bg-[#181713] px-6 py-4 text-[#f4f0e8] transition-opacity disabled:cursor-not-allowed disabled:opacity-25"
-                                >
-                                    <span className="text-[9px] uppercase tracking-[0.18em]">
-                                        Continue
-                                    </span>
-
-                                    <ArrowRight size={14} strokeWidth={1.2} />
-                                </button>
-                            </div>
-                        )}
-
-                        {step === 4 && (
+                        {/* controls */}
+                        <div className="mt-12 flex items-center justify-between border-t border-black/15 pt-7">
                             <button
                                 type="button"
-                                onClick={() => setStep(3)}
-                                className="mt-8 flex items-center gap-3 text-[9px] uppercase tracking-[0.18em]"
+                                onClick={back}
+                                disabled={step === 1}
+                                className="group flex items-center gap-3 text-[9px] uppercase tracking-[0.18em] disabled:pointer-events-none disabled:opacity-20"
                             >
-                                <ArrowLeft size={14} strokeWidth={1.2} />
+                                <ArrowLeft
+                                    size={14}
+                                    strokeWidth={1.2}
+                                    className="transition-transform group-hover:-translate-x-1"
+                                />
+
                                 Back
                             </button>
-                        )}
 
+                            <button
+                                type="button"
+                                disabled={!canContinue}
+                                onClick={next}
+                                className="group flex items-center gap-5 bg-[#181713] px-6 py-4 text-[#f4f0e8] transition-opacity disabled:pointer-events-none disabled:opacity-25"
+                            >
+                                <span className="text-[9px] uppercase tracking-[0.2em]">
+                                    {step === 4
+                                        ? "Request appointment"
+                                        : "Continue"}
+                                </span>
+
+                                <ArrowRight
+                                    size={14}
+                                    strokeWidth={1.2}
+                                    className="transition-transform group-hover:translate-x-1"
+                                />
+                            </button>
+                        </div>
+
+                        <p className="mt-5 text-right text-[8px] uppercase tracking-[0.16em] text-[#777166]">
+                            Concept booking experience / no payment required
+                        </p>
                     </div>
                 </div>
             </div>
@@ -495,30 +527,82 @@ export default function BookingFlow() {
     );
 }
 
-function InputField({
-    label,
-    type,
-    value,
-    onChange,
+function StepShell({
+    eyebrow,
+    title,
+    description,
+    children,
 }: {
-    label: string;
-    type: string;
-    value: string;
-    onChange: (value: string) => void;
+    eyebrow: string;
+    title: string;
+    description: string;
+    children: React.ReactNode;
 }) {
     return (
-        <label>
-            <span className="text-[9px] uppercase tracking-[0.18em] text-[#777166]">
+        <div>
+            <p className="text-[9px] uppercase tracking-[0.22em] text-[#967653]">
+                {eyebrow}
+            </p>
+
+            <h3 className="serif mt-5 max-w-[760px] text-4xl leading-[0.95] tracking-[-0.04em] md:text-6xl">
+                {title}
+            </h3>
+
+            <p className="mt-6 max-w-[560px] text-[12px] leading-6 text-[#666057]">
+                {description}
+            </p>
+
+            <div className="mt-12">{children}</div>
+        </div>
+    );
+}
+
+function SummaryItem({
+    label,
+    value,
+}: {
+    label: string;
+    value: string;
+}) {
+    return (
+        <div>
+            <p className="text-[8px] uppercase tracking-[0.18em] text-[#777166]">
                 {label}
-            </span>
+            </p>
+
+            <p className="serif mt-1 text-xl tracking-[-0.02em]">
+                {value}
+            </p>
+        </div>
+    );
+}
+
+function Field({
+    label,
+    value,
+    onChange,
+    placeholder,
+    type = "text",
+}: {
+    label: string;
+    value: string;
+    onChange: (value: string) => void;
+    placeholder: string;
+    type?: string;
+}) {
+    return (
+        <div>
+            <label className="text-[9px] uppercase tracking-[0.18em] text-[#777166]">
+                {label}
+            </label>
 
             <input
-                required
                 type={type}
                 value={value}
                 onChange={(e) => onChange(e.target.value)}
-                className="mt-3 w-full border-b border-black/25 bg-transparent py-3 text-[13px] outline-none transition-colors focus:border-black"
+                placeholder={placeholder}
+                className="mt-3 w-full border border-black/15 bg-[#f4f0e8] px-5 py-4 text-[13px] outline-none transition-colors placeholder:text-black/25 focus:border-[#181713]"
             />
-        </label>
+        </div>
     );
 }

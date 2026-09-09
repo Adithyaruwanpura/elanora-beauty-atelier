@@ -1,98 +1,72 @@
 "use client";
 
-import Link from "next/link";
-import { ArrowRight } from "lucide-react";
 import { motion } from "motion/react";
 
-const steps = [
+const process = [
     {
         number: "01",
         title: "Consult",
-        text: "We begin by understanding your preferences, lifestyle and desired result.",
+        text: "We begin with conversation, reference and the reality of how you live.",
     },
     {
         number: "02",
         title: "Create",
-        text: "Your artist shapes a personalised approach using considered techniques and products.",
+        text: "Technique, proportion and detail are shaped around the individual.",
     },
     {
         number: "03",
         title: "Refine",
-        text: "Every detail is adjusted to create a polished result that feels naturally yours.",
+        text: "The final result is adjusted until it feels considered, effortless and yours.",
     },
 ];
 
 export default function ServiceExperience() {
     return (
-        <section className="bg-[#ebe4d8] py-24 md:py-36">
+        <section className="bg-[#ebe4d8] py-24 md:py-32 lg:py-40">
             <div className="container-main">
+                <p className="text-[9px] uppercase tracking-[0.24em] text-[#777166]">
+                    03 / The Experience
+                </p>
 
-                <div className="grid gap-12 lg:grid-cols-[0.7fr_1.6fr]">
-                    <div>
-                        <p className="eyebrow text-[#777166]">
-                            The Experience
-                        </p>
-                    </div>
+                <div className="mt-8 grid gap-10 lg:grid-cols-[0.9fr_1.1fr]">
+                    <h2 className="serif max-w-[700px] text-5xl leading-[0.9] tracking-[-0.05em] md:text-7xl">
+                        Three moments.
+                        <span className="block italic text-[#967653]">
+                            One considered result.
+                        </span>
+                    </h2>
 
-                    <motion.div
-                        initial={{ opacity: 0, y: 40 }}
-                        whileInView={{ opacity: 1, y: 0 }}
-                        viewport={{ once: true }}
-                        transition={{
-                            duration: 0.8,
-                            ease: [0.16, 1, 0.3, 1],
-                        }}
-                    >
-                        <h2 className="serif text-[11vw] leading-[0.95] tracking-[-0.045em] sm:text-[8vw] lg:text-[5.5vw]">
-                            Thoughtful from
-                            <br />
-                            <span className="italic text-[#8a8173]">
-                                beginning to finish.
-                            </span>
-                        </h2>
-
-                        <div className="mt-16">
-                            {steps.map((step) => (
-                                <div
-                                    key={step.number}
-                                    className="grid gap-5 border-t border-black/15 py-8 md:grid-cols-[70px_0.7fr_1fr]"
-                                >
-                                    <span className="text-[10px] tracking-[0.2em] text-[#777166]">
-                                        {step.number}
-                                    </span>
-
-                                    <h3 className="serif text-3xl">
-                                        {step.title}
-                                    </h3>
-
-                                    <p className="max-w-md text-[13px] leading-6 text-[#696359]">
-                                        {step.text}
-                                    </p>
-                                </div>
-                            ))}
-                        </div>
-
-                        <div className="mt-12 border-t border-black/15 pt-9">
-                            <Link
-                                href="/book"
-                                className="group inline-flex items-center gap-5"
+                    <div className="border-t border-black/15">
+                        {process.map((item, index) => (
+                            <motion.div
+                                key={item.title}
+                                initial={{ opacity: 0, y: 20 }}
+                                whileInView={{ opacity: 1, y: 0 }}
+                                viewport={{
+                                    once: true,
+                                    amount: 0.4,
+                                }}
+                                transition={{
+                                    duration: 0.55,
+                                    delay: index * 0.06,
+                                }}
+                                className="group grid gap-5 border-b border-black/15 py-8 md:grid-cols-[70px_0.7fr_1.3fr] md:items-center"
                             >
-                                <span className="text-[10px] uppercase tracking-[0.2em]">
-                                    Begin your ritual
+                                <span className="text-[8px] tracking-[0.2em] text-[#967653]">
+                                    {item.number}
                                 </span>
 
-                                <span className="flex h-10 w-10 items-center justify-center rounded-full border border-black/25 transition-all duration-300 group-hover:bg-[#181713] group-hover:text-[#f4f0e8]">
-                                    <ArrowRight
-                                        size={14}
-                                        strokeWidth={1.2}
-                                    />
-                                </span>
-                            </Link>
-                        </div>
+                                <h3 className="serif text-3xl tracking-[-0.03em] transition-transform duration-300 group-hover:translate-x-2 md:text-4xl">
+                                    {item.title}
+                                </h3>
 
-                    </motion.div>
+                                <p className="max-w-[440px] text-[12px] leading-6 text-[#666057] md:justify-self-end">
+                                    {item.text}
+                                </p>
+                            </motion.div>
+                        ))}
+                    </div>
                 </div>
-
             </div>
         </section>
     );

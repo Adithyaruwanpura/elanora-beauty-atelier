@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
 import { motion } from "motion/react";
+import Magnetic from "@/components/ui/Magnetic";
 
 export default function FinalCTA() {
     return (
@@ -40,22 +41,24 @@ export default function FinalCTA() {
                                 your features, preferences and individuality.
                             </p>
 
-                            <Link
-                                href="/book"
-                                className="group flex w-fit items-center gap-5"
-                            >
-                                <span className="text-[10px] uppercase tracking-[0.2em]">
-                                    Book an appointment
-                                </span>
+                            <Magnetic>
+                                <Link
+                                    href="/book"
+                                    className="group flex w-fit items-center gap-5"
+                                >
+                                    <span className="text-[10px] uppercase tracking-[0.2em]">
+                                        Book an appointment
+                                    </span>
 
-                                <span className="flex h-12 w-12 items-center justify-center rounded-full border border-white/30 transition-all duration-300 group-hover:bg-[#f4f0e8] group-hover:text-[#181713]">
-                                    <ArrowUpRight
-                                        size={17}
-                                        strokeWidth={1.2}
-                                        className="transition-transform duration-300 group-hover:rotate-45"
-                                    />
-                                </span>
-                            </Link>
+                                    <span className="flex h-12 w-12 items-center justify-center rounded-full border border-white/30 transition-all duration-300 group-hover:bg-[#f4f0e8] group-hover:text-[#181713]">
+                                        <ArrowUpRight
+                                            size={17}
+                                            strokeWidth={1.2}
+                                            className="transition-transform duration-300 group-hover:rotate-45"
+                                        />
+                                    </span>
+                                </Link>
+                            </Magnetic>
                         </div>
                     </div>
                 </div>

@@ -85,3 +85,12 @@ a {
     transition-duration: 0.01ms !important;
   }
 }
+
+@media (pointer: fine) and (min-width: 768px) {
+
+  a,
+  button,
+  [data-cursor="interactive"] {
+    cursor: pointer;
+  }
+}

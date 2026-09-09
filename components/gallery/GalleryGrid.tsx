@@ -113,11 +113,11 @@ export default function GalleryGrid() {
                             </div>
 
                             <div className="mt-5 flex items-start justify-between gap-5 border-b border-black/15 pb-5">
-                                <h2 className="serif text-3xl tracking-[-0.03em]">
+                                <h2 className="serif text-3xl tracking-[-0.03em] transition-transform duration-500 group-hover:translate-x-2">
                                     {work.title}
                                 </h2>
 
-                                <p className="pt-2 text-[9px] uppercase tracking-[0.17em] text-[#777166]">
+                                <p className="pt-2 text-[9px] uppercase tracking-[0.17em] text-[#777166] transition-opacity duration-300 group-hover:opacity-50">
                                     {work.category}
                                 </p>
                             </div>
